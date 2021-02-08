@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.widget.SearchView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                setAdapter(getFilteredList(s.toLowerCase()));
+                ArrayList<DataModel> list = getFilteredList(s.toLowerCase());
+                Collections.sort(list, new SortByName());
+                setAdapter(list);
                 return false;
             }
         });
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             int idIndex = cursor.getColumnIndex("id");
             do {
                 dataList.add(new DataModel(cursor.getString(nameIndex), cursor.getString(descriptionIndex)));
+                Collections.sort(dataList, new SortByName());
                 setAdapter(dataList);
             } while (cursor.moveToNext());
         } else
