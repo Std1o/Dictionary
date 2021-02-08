@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<DataModel> dataList;
     private RecyclerView rv;
     SQLiteDatabase db;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,36 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper.create_db();
         db = databaseHelper.open();
         readDb();
+        setOnQueryTextListener();
+    }
+
+    private void setOnQueryTextListener() {
+        searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                setAdapter(getFilteredList(s.toLowerCase()));
+                return false;
+            }
+        });
+    }
+
+    private ArrayList<DataModel> getFilteredList(String query) {
+        ArrayList<DataModel> filteredList = new ArrayList<>();
+        for (DataModel dataModel : dataList) {
+            if (query.isEmpty()) {
+                filteredList.add(dataModel);
+            }
+            else if (dataModel.title.toLowerCase().contains(query)) {
+                filteredList.add(dataModel);
+            }
+        }
+        return filteredList;
     }
 
     private void readDb() {
@@ -37,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             int idIndex = cursor.getColumnIndex("id");
             do {
                 dataList.add(new DataModel(cursor.getString(nameIndex), cursor.getString(descriptionIndex)));
-                setAdapter();
+                setAdapter(dataList);
             } while (cursor.moveToNext());
         } else
             cursor.close();
@@ -49,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
         rv.setLayoutManager(llm);
     }
 
-    private void setAdapter() {
-        RVAdapter adapter = new RVAdapter(dataList, this);
+    private void setAdapter(ArrayList<DataModel> list) {
+        RVAdapter adapter = new RVAdapter(list, this);
         rv.setAdapter(adapter);
     }
 }
