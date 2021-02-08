@@ -1,6 +1,7 @@
 package com.stdio.dictionary;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DataViewHolder> {
         dataViewHolder.tvTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, dataList.get(position).title, Toast.LENGTH_SHORT).show();
+                DetailActivity.name = dataList.get(position).title;
+                DetailActivity.description = dataList.get(position).description;
+                mContext.startActivity(new Intent(mContext, DetailActivity.class));
             }
         });
     }
