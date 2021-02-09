@@ -3,6 +3,7 @@ package com.stdio.dictionary;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
@@ -16,6 +17,6 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         setTitle(name);
         TextView tvDescription = findViewById(R.id.tvDescription);
-        tvDescription.setText(description);
+        tvDescription.setText(Html.fromHtml(description));
     }
 }
